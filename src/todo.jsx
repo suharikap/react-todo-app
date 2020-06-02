@@ -13,6 +13,7 @@ class Todo extends React.Component{
         return(
             <div>
                 <h4>TODO</h4>
+                <div> git test </div>
                 <form onSubmit={this.submitButton}>
                 <input type='textbox' value={this.state.text} ></input>
                 <br/>
