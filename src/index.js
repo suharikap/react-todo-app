@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Todo from './todo';
+import Todo from './Pages/todo'
+import 'bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-      <Todo />,
-  document.getElementById('root')
+      <Todo />, document.getElementById('root')
+     // <Form />,document.getElementById('root')
+
 );
 
 // If you want your app to work offline and load faster, you can change
