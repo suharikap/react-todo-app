@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Todo from './Pages/todo'
+//import Todo from './Pages/todo'
 import 'bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
+import  App from './App'
 
 ReactDOM.render(
-      <Todo />, document.getElementById('root')
+      <App />, document.getElementById('root')
      // <Form />,document.getElementById('root')
 
 );
