@@ -1,104 +1,218 @@
 import React from "react";
+import DatePicker from "react-datepicker";
+//import Item from "./Item"
+//import { render } from "@testing-library/react";
 
-const TodoItem = (props) => {
-  const mystyle = {};
+//const TodoItem = (props) => {
+class TodoItem extends React.Component {
+  state = {
+    startDate: new Date(),
+    text: this.props.item.text,
+  };
+  handleChange = (date, e) => {
+    e.stopPropagation();
+    this.setState({
+      startDate: date,
+    });
+  };
+  onChange = (e) => {
+    this.setState({ text: e.target.value });
+  };
 
-  let today = Date.now();
+  handleClick = (e) => {
+    if (this.props.isFullView !== true && !this.props.item.isEditable) {
+      this.props.history.push("/item/" + this.props.item.id);
+    }
+    //const url = 'http://localhost:3000/item/'+ this.props.item.id;
+    //window.location.href=url
+  };
+  render() {
+    const mystyle = {
+      //cursor:'pointer'
+    };
+    //const input1 = React.createRef();
+    //const props = this.props;
+    console.log("this3", this.props.item);
+    console.log("view", this.props.isFullView);
+    console.log("view", this.props.item.isEditable);
+    let today = Date.now();
+    let itemDate = Date.parse(this.props.item.date);
+    let isPast = false;
+    if (itemDate > today) {
+      isPast = true;
+    }
 
-  let itemDate = Date.parse(props.item.date);
-  let isPast = false;
-  if (itemDate > today) {
-    isPast = true;
-  }
+    return (
+      <div
+        className=" container text-center checkbox list-group"
+        style={{ mystyle }}
+        onClick={this.handleClick}
+      >
+        {this.props.item.isEditable ? (
+          <li className="list-group-item" key={this.props.item.id}>
+            <input
+              type="checkbox"
+              className="float-left  m-2"
+              defaultChecked={this.props.item.isCompleted}
+              onChange={(e) => {
+                //e.stopPropagation();
+                this.props.completeTodo(this.props.item.id, {
+                  ...this.props.item,
+                  isCompleted: e.target.checked,
+                });
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            ></input>
 
-  return (
-    <div
-      className=" container text-center checkbox list-group"
-      style={{ mystyle }}
-    >
-      <li className="list-group-item" key={props.item.id}>
-        <input
-          type="checkbox"
-          className="float-left m-2"
-          defaultChecked={props.item.isCompleted}
-          onChange={(e) =>
-            props.setIsCompleted(props.item.id, e.target.checked)
-          }
-        ></input>
+            <input
+              type="textbox"
+              className="float-left ml-3 "
+              //ref={input1}
+              value={this.state.text}
+              onChange={this.onChange}
+              // onClick={(e) => {
+              // e.stopPropagation();
+              //}}
+              //value={this.props.item.text}
+              
+            ></input>
 
-        <span className="float-left pl-3 ">{props.item.text} </span>
-
-        <i>
-          {props.item.isSnoozeOn ? (
-            <button>Snoozed for 1hr</button>
-          ) : (
             <button
-              onClick={() =>
-                props.updateSnoozeStatus(
-                  props.item.id,
-                  !props.item.isSnoozeOn
-                )
-              }
+              className="float-right"
+              onClick={(e) => {
+                e.stopPropagation();
+                this.props.editTodo(
+                  this.props.item.id,
+                  { ...this.props.item, isReminderOn: e.target.checked },
+                  (this.props.item.text = this.state.text),
+                  (this.props.item.date = this.state.startDate.toDateString())
+                );
+              }}
             >
-              Snooze
+              Save
             </button>
-          )}
-        </i>
-        <i
-          onClick={() =>
-            props.updateSnoozeStatus(
-              props.item.id,
-              !props.item.isSnoozeOn
-            )
-          }
-        >
-          {props.item.isSnoozeOn ? <i class="fa fa-times pl-4"></i> : null}
-        </i>
-        {isPast ? (
-          <span className="text-success float-right">
-            <i
-              onClick={() =>
-                props.updateReminderStatus(
-                  props.item.id,
-                  !props.item.isReminderOn
-                )
-              }
-              className="pr-2"
-            >
-              {props.item.isReminderOn ? (
-                <i class="fa fa-bell" style={{ color: "red" }}></i>
-              ) : (
-                <i class="fa fa-bell" style={{ color: "black" }}></i>
-              )}
-            </i>
-            {props.item.date}
-          </span>
+
+            {isPast ? (
+              <span className="text-success float-right">
+                {/*<i onClick={() =>props.updateReminderStatus(props.item.id,!props.item.isReminderOn)*/}
+                <DatePicker
+                  selected={this.state.startDate}
+                  onChange={this.handleChange}
+                  minDate={new Date()}
+                  dateFormat="dd/MM/yyyy"
+                />
+              </span>
+            ) : (
+              <span className=" text-danger float-right ">
+                {/*<i onClick={() =>props.updateReminderStatus(props.item.id,!props.item.isReminderOn)*/}
+                <DatePicker
+                  selected={this.state.startDate}
+                  onChange={this.handleChange}
+                  minDate={new Date()}
+                  dateFormat="dd/MM/yyyy"
+
+                  //className="p-2 "
+                />
+              </span>
+            )}
+          </li>
         ) : (
-          <span className=" text-danger float-right ">
+          <li className="list-group-item" key={this.props.item.id}>
+            <input
+              type="checkbox"
+              className="float-left m-1 "
+              defaultChecked={this.props.item.isCompleted}
+              onChange={(e) => {
+                // e.stopPropagation();
+                this.props.completeTodo(this.props.item.id, {
+                  ...this.props.item,
+                  isCompleted: e.target.checked,
+                });
+              }}
+              ///onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            ></input>
+
+            <span className="float-left pl-3 ">{this.props.item.text} </span>
+            {/*<span className="float-left pl-3 ">{this.state.text} </span>*/}
             <i
-              onClick={() =>
-                props.updateReminderStatus(
-                  props.item.id,
-                  !props.item.isReminderOn
-                )
-              }
-              className="pr-2"
-            >
-              {props.item.isReminderOn ? (
-                <i class="fa fa-bell" style={{ color: "red" }}></i>
-              ) : (
-                <i class="fa fa-bell" style={{ color: "black" }}></i>
-              )}
-            </i>
-            {props.item.date}
-          </span>
+              className="fa fa-pencil-square-o float-right  pl-2 pt-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                //e.stopPropagation();
+                this.props.editTodo(this.props.item.id, {
+                  ...this.props.item,
+                  isReminderOn: e.target.checked,
+                });
+              }}
+            ></i>
+
+            {isPast ? (
+              <span className="text-success float-right">
+                <i
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.props.remainderTodo(this.props.item.id, {
+                      ...this.props.item,
+                      isReminderOn: e.target.checked,
+                    });
+                  }}
+                  className="pr-2"
+                >
+                  {this.props.item.isReminderOn ? (
+                    <i className="fa fa-bell" style={{ color: "red" }}></i>
+                  ) : (
+                    <i className="fa fa-bell" style={{ color: "black" }}></i>
+                  )}
+                </i>
+                {this.props.item.date}
+                <i
+                  class="fa fa-trash pl-2"
+                  style={{ color: "black" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.props.removeTodo(this.props.item.id);
+                  }}
+                ></i>
+              </span>
+            ) : (
+              <span className=" text-danger float-right ">
+                <i
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.props.remainderTodo(this.props.item.id, {
+                      ...this.props.item,
+                      isReminderOn: e.target.checked,
+                    });
+                  }}
+                  className="pr-2"
+                >
+                  {this.props.item.isReminderOn ? (
+                    <i className="fa fa-bell" style={{ color: "red" }}></i>
+                  ) : (
+                    <i className="fa fa-bell" style={{ color: "black" }}></i>
+                  )}
+                </i>
+                {this.props.item.date}
+                <i
+                  className="fa fa-trash pl-2"
+                  style={{ color: "black" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.props.removeTodo(this.props.item.id);
+                  }}
+                ></i>
+              </span>
+            )}
+          </li>
         )}
-      </li>
-    </div>
-  );
-};
-
-
+      </div>
+    );
+  }
+}
 
 export default TodoItem;
-

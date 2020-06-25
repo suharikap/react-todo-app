@@ -1,23 +1,50 @@
 import React from "react";
 import TodoList from "../Components/todolist";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import * as todoActions from "../actions/todo";
+//import { date } from "yup";
+//import axios from 'axios';
+//axios.default.baseURL ="http://localhost:9000/db/todo"
+//import { response } from "express";
 
 class Todo extends React.Component {
   state = {
     items: [
       {
-        id: "1",
-        text: "Hello",
-        date: "Fri Jun 04 2020",
-        isCompleted: false,
-        isReminderOn: false,
-        isSnoozeOn: false,
+        isEditable: false,
       },
     ],
     text: "",
     startDate: new Date(),
   };
+  
+  /*componentDidMount() {
+    //axios.get('http://localhost:9000/db/todo')
+        //.then(res=>this.setState({todos:res.data}))
+        //.then(console.log("hiii"))
+        
+      axios.get('')
+      .then(response=>{
+        console.log(response.data)
+      })
+      .catch(error=>{
+        console.log('error')
+      });
+      
+   }*/
+   componentDidMount() {
+    fetch('http://localhost:9000/db/todo')
+    .then(res => res.json())
+    .then((items) => {
+      this.setState({ items: items })
+      console.log("items" , items);
+
+    })
+    .catch(console.log("error"))
+  }
 
   handleChange = (date) => {
     this.setState({
@@ -31,48 +58,18 @@ class Todo extends React.Component {
 
   onSubmit = (a) => {
     a.preventDefault();
-    const newItem = {
-      text: this.state.text,
-      date: this.state.startDate.toDateString(),
-      id: Date.now(),
-      isCompleted: false,
-      isRemainder: false,
-      isSnoozeOn: false,
-    };
-    this.setState((e) => ({
-      items: e.items.concat(newItem),
-      text: "",
-    }));
+
+    this.props.actions.addTodo(
+      this.state.text,
+      this.state.startDate.toDateString()
+    );
+    this.setState({ text: "" });
   };
 
   setIsCompleted = (itemId, isCompleted) => {
-    let items = this.state.items;
-
-    let newItems = [];
-
-    //loop and set s
-    for (var item of items) {
-      if (item.id === itemId) {
-        item.isCompleted = isCompleted;
-      }
-      newItems.push(item);
-    }
-
-    this.setState({ items: newItems });
+    this.props.actions.completeTodo(this.state.id, this.state.isCompleted);
   };
 
-  updateReminderStatus = (itemId, isReminderOn) => {
-    let items = this.state.items;
-    let newItems = [];
-    for (var item of items) {
-      if (item.id === itemId) {
-        item.isReminderOn = isReminderOn;
-      }
-      newItems.push(item);
-    }
-
-    this.setState({ items: newItems });
-  };
 
   updateSnoozeStatus = (itemId, isSnoozeOn) => {
     let items = this.state.items;
@@ -88,6 +85,9 @@ class Todo extends React.Component {
   };
 
   render() {
+    console.log("todo props is ", this.props);
+    //console.log("onchange ", this.onChange)
+    console.log("this", this.props.todo);
     return (
       <div>
         <h4 className="text-center m-4">TODO</h4>
@@ -116,16 +116,41 @@ class Todo extends React.Component {
         </form>
         <div className=" container text-center checkbox list-group pl-4">
           <TodoList
-            items={this.state.items}
-            setIsCompleted={this.setIsCompleted}
-            updateReminderStatus={this.updateReminderStatus}
+            items={this.props.todo}
+            onChange={this.onChange}
+            handleChange={this.handleChange}
+            updateTodo={this.props.actions.updateTODO}
+            dateChange={this.props.actions.dateChange}
+            completeTodo={this.props.actions.completeTodo}
+            removeTodo={this.props.actions.removeTodo}
+            editTodo={this.props.actions.editTodo}
+            remainderTodo={this.props.actions.remainderTodo}
             updateSnoozeStatus={this.updateSnoozeStatus}
+            history={this.props.history}
           />
         </div>
       </div>
     );
   }
 }
+const mapStateToProps = ({ todo }) => ({
+  todo,
+});
 
-export default Todo;
+/*const mapStateToPropss = (state) => ({
+  todo : state.todo,
+});
 
+const mapStateToProps2s = (state) => {
+  return {
+    todo : state.todo,
+  }
+};*/
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(todoActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Todo);
+
+//export default Todo;
