@@ -1,26 +1,29 @@
 import types from "./actionType";
 
-export const addTodo = (text, date, startdate) => {
+export const addTodo = (todo) => {
   return {
     type: types.ADD_TODO,
-    text: text,
+    todo
+    /*text: text,
     date: date,
     startdate: new Date(),
     isCompleted: false,
-    isReminderOn: false,
+    isReminderOn: false,*/
+    
   };
 };
 
-export const completeTodo = (id) => ({
+export const completeTodo = (id,todo) => ({
   type: types.COMPLETE_TODO,
   id,
+  todo
 });
 
 export const dateChange = (date) => ({
   type: types.DATE_CHANGE,
   date,
 });
-export const removeTodo = (id, text) => ({
+export const removeTodo = (id) => ({
   type: types.REMOVE_TODO,
   id,
 });
@@ -30,15 +33,27 @@ export const remainderTodo = (id) => ({
   id,
 });
 
-export const editTodo = (id) => ({
+export const editTodo = (id,todo) => ({
   type: types.EDIT_TODO,
   id,
+  todo
 });
 
-export const setTodo = (id) => ({
+export const setTodos = (todos) => ({
   type: types.SET_TODO,
-  id,
+  todos,
 });
+export const loadingTodo = () =>({
+  type : types.LOADING_TODO,
+  
+});
+
+export const errorTodo = () =>({
+  type: types.ERROR_TODO
+});
+export const getTodo =() => ({
+  type: types.GET_TODO
+})
 
 export const formtext = (name, age, email) => {
   return {
@@ -49,12 +64,8 @@ export const formtext = (name, age, email) => {
   };
 };
 
-//name: "harik",
-//age: "24",
-//email: " suharikap@gmail.com",
-//isEditable: true,
-
 export const nameChange = (name) => ({
   type: types.NAME_CHANGE,
   name: name,
 });
+

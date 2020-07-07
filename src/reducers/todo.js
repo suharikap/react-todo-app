@@ -1,21 +1,31 @@
 import types from "../actions/actionType";
+//import todo from "../Pages/todo";
 
-const initialState = [
-  {
-    id: 1,
+const initialState = 
+   {
+     loading : false,
+     error: false,
+     items:[]
+    /*id: 1,
     text: "Hello",
     date: "Fri Jun 05 2020",
     startdate: new Date(),
     isCompleted: false,
     isReminderOn: false,
-    isEditable: false,
-  },
-];
+    isEditable: false,*/
+    
+  }
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
     case types.ADD_TODO:
-      return [
+      return{
+        ...state,
+        items:[...state.items,action.todo]
+      }
+      /*return [...state, action.todo];
+       OR
+       return [
         ...state,
         {
           id: Date.now(),
@@ -23,42 +33,76 @@ export default (state = initialState, action = {}) => {
           date: action.date,
           //startdate: Date.now(),
         },
-      ];
-    case types.DATE_CHANGE:
-      return {
-        startDate: action.date,
-      };
+      ];*/
+   
     case types.COMPLETE_TODO:
-      return state.map((todo) =>
+      return{
+        ...state,
+        items:state.items.map((todo) => (todo.id === action.id ? action.todo : todo))
+      }
+      //return state.map((todo) => (todo.id === action.id ? action.todo : todo));
+    /*state.map((todo) =>
         todo.id === action.id
-          ? {
-              ...todo,
-              isCompleted: !todo.isCompleted,
-            }
+          ? 
+            action.todo
           : todo
-      );
+      );*/
     case types.REMOVE_TODO:
-      return state.filter((todo) => todo.id !== action.id);
+      return{
+        ...state,
+        items:state.items.filter((todo) => todo.id !== action.id)
+      }
+      //return state.filter((todo) => todo.id !== action.id);
+
     case types.REMINDER_TODO:
-      return state.map((todo) =>
+      return{
+        ...state,
+        items:state.items.map((todo) =>
         todo.id === action.id
           ? {
               ...todo,
               isReminderOn: !todo.isReminderOn,
             }
           : todo
-      );
-    case types.EDIT_TODO:
-      return state.map((todo) =>
+        )}
+    
+     /* return state.map((todo) =>
         todo.id === action.id
           ? {
               ...todo,
-              isEditable: !todo.isEditable, 
+              isReminderOn: !todo.isReminderOn,
             }
           : todo
-      );
-      case types.SET_TODO:
-        return
+      );*/
+    case types.EDIT_TODO:
+      return{
+        ...state,
+        items:state.items.map((todo) => (todo.id === action.id ? action.todo : todo))
+      }
+     // return state.map((todo) => (todo.id === action.id ? action.todo : todo));
+
+    case types.SET_TODO:
+      return{
+        ...state,   
+        items:[...action.todos],
+        loading :false
+      }
+      //return action.todos;
+
+      case types.LOADING_TODO:
+        return {
+          ...state,
+            loading: true,
+            error:false
+            //isError: false,
+        };
+      
+      case types.ERROR_TODO:
+        return{
+         ...state,
+          loading : false,
+          error :true
+        }
     default:
       return state;
   }

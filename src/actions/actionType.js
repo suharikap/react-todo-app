@@ -7,5 +7,8 @@ export default{
     EDIT_TODO : 'EDIT-TODO',
     FORM_TEXT : 'FORM_TEXT',
     NAME_CHANGE : 'NAME_CHANGE',
-    SET_TODO : 'SET_TODO'
+    SET_TODO : 'SET_TODO',
+    LOADING_TODO : 'LOADING_TODO',
+    ERROR_TODO : 'ERROR_TODO',
+    GET_TODO : 'GET_TODO'
 };
